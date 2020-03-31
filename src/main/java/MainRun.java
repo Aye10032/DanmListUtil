@@ -1,45 +1,30 @@
 import com.aye10032.util.BiliUtil;
-import com.aye10032.util.FileUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
+import com.aye10032.util.CRC32Util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
+import java.io.StringReader;
 import java.util.List;
 
 
 public class MainRun {
 
     public static void main(String[] args) {
-        try {
-            String xmlStr = new BiliUtil().getDanmu("171147896");
+        CRC32Util crc32Util = new CRC32Util();
+        List<String> videos = new BiliUtil().getVideoList("1311124",20);
 
-            Document document = DocumentHelper.parseText(xmlStr);
+        System.out.println(videos);
 
-            Element rootElm = document.getRootElement();
-
-            List nodes = rootElm.elements("d");
-            for (Iterator it = nodes.iterator(); it.hasNext();) {
-                Element elm = (Element) it.next();
-
-                System.out.print(elm.attributeValue("p").split(",")[6]);
-                System.out.println(" " + elm.getText());
-                // do something
+        for (String aid : videos) {
+            System.out.println("https://www.bilibili.com/video/av"+aid);
+            List<String> cidList = new BiliUtil().getCid(aid);
+            for (String cid:cidList){
+                String xmlString = new BiliUtil().getDanmu(cid);
+                List<String[]> danmu = new BiliUtil().getDanmuData(xmlString);
+                for (String[] danmudata : danmu) {
+                    if (danmudata[0].contains("TIS") || danmudata[0].contains("tis") || danmudata[0].contains("Tis")) {
+                        System.out.println(danmudata[0] + "(" + danmudata[1] + "->" + crc32Util.solve(danmudata[1]) + ")");
+                    }
+                }
             }
-        } catch (DocumentException e) {
-            e.printStackTrace();
         }
     }
 
