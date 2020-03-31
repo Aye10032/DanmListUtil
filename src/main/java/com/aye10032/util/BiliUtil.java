@@ -62,6 +62,8 @@ public class BiliUtil {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e){
+            e.printStackTrace();
         } finally {
             try {
                 if (response != null) {
@@ -119,8 +121,8 @@ public class BiliUtil {
             return body;
     }
 
-    public List<String> getVideoList(String UUID, int pageSize) {
-        List<String> videolist = new ArrayList<String>();
+    public List<String[]> getVideoList(String UUID, int pageSize) {
+        List<String[]> videolist = new ArrayList<String[]>();
 
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append(api_video).append(UUID).append("&pagesize=").append(pageSize);
@@ -137,8 +139,6 @@ public class BiliUtil {
                 body = EntityUtils.toString(httpEntity);// 转成string
             }
 
-            new FileUtil(UUID + ".json").save(body);
-
             JsonParser jsonParser = new JsonParser();
             JsonElement element = jsonParser.parse(body);
 
@@ -151,7 +151,10 @@ public class BiliUtil {
                     if (listElement.isJsonObject()) {
                         JsonObject listObject = listElement.getAsJsonObject();
 
-                        videolist.add(listObject.get("aid").getAsString());
+                        String[] strings = new String[2];
+                        strings[0] = listObject.get("aid").getAsString();
+                        strings[1] = listObject.get("title").getAsString();
+                        videolist.add(strings);
                     }
                 }
             }
@@ -177,8 +180,7 @@ public class BiliUtil {
         return videolist;
     }
 
-    public List<String> getVideoList(String UUID) {
-        List<String> videolist = new ArrayList<String>();
+    public List<String[]> getVideoList(String UUID) {
 
         return getVideoList(UUID, 10);
     }
@@ -243,6 +245,7 @@ public class BiliUtil {
             JsonParser jsonParser = new JsonParser();
             JsonElement element = jsonParser.parse(body);
 
+
             if (element.isJsonObject()) {
                 JsonObject jsonObject = element.getAsJsonObject();
 
@@ -260,7 +263,10 @@ public class BiliUtil {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+        finally {
             try {
                 if (response != null) {
                     response.close(); //释放连接
