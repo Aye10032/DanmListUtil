@@ -18,13 +18,12 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class BiliUtil {
 
     static String api_up = "https://api.bilibili.com/x/web-interface/card?mid=";
+    static String api_following = "https://api.bilibili.com/x/relation/followings?vmid=";
     static String api_video = "http://space.bilibili.com/ajax/member/getSubmitVideos?mid=";
     static String api_videopro = "https://api.bilibili.com/x/web-interface/view?aid=";
     static String api_danmu = "https://api.bilibili.com/x/v1/dm/list.so?oid=";
@@ -33,6 +32,91 @@ public class BiliUtil {
 
     public BiliUtil() {
         httpclient = HttpClients.createDefault();
+    }
+
+    public JsonObject getUpInfo(String UUID){
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append(api_up).append(UUID);
+
+        HttpGet httpget = new HttpGet(new String(urlBuilder));
+
+        CloseableHttpResponse response = null;
+        String body = null;
+        JsonObject jsonObject = null;
+        try {
+            response = httpclient.execute(httpget);
+
+
+            if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                HttpEntity httpEntity = response.getEntity();
+                body = EntityUtils.toString(httpEntity, "UTF-8");
+            }
+
+            JsonParser jsonParser = new JsonParser();
+            JsonElement element = jsonParser.parse(body);
+
+            if (element.isJsonObject()){
+                jsonObject = element.getAsJsonObject();
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close(); //释放连接
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (httpclient != null) {
+                    httpclient.close();//关闭客户端
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return jsonObject;
+    }
+
+    public String getUplist(String UUID,int pageNumber){
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append(api_following).append(UUID).append("&pn=")
+                .append(pageNumber).append("&ps=20&order=desc&jsonp=jsonp");
+
+        HttpGet httpget = new HttpGet(new String(urlBuilder));
+
+        CloseableHttpResponse response = null;
+        String body = null;
+        try {
+            response = httpclient.execute(httpget);
+
+
+            if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                HttpEntity httpEntity = response.getEntity();
+                body = EntityUtils.toString(httpEntity, "UTF-8");
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (response != null) {
+                    response.close(); //释放连接
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (httpclient != null) {
+                    httpclient.close();//关闭客户端
+                }
+            } catch (Exception e) {
+            }
+        }
+
+            return body;
     }
 
     public List<String> getVideoList(String UUID, int pageSize) {

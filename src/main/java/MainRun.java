@@ -9,7 +9,7 @@ public class MainRun {
 
     public static void main(String[] args) {
         CRC32Util crc32Util = new CRC32Util();
-        List<String> videos = new BiliUtil().getVideoList("1311124",20);
+        List<String> videos = new BiliUtil().getVideoList("1311124",30);
 
         System.out.println(videos);
 
