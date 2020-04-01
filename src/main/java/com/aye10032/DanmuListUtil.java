@@ -100,6 +100,7 @@ public class DanmuListUtil {
                 videoDanmuClass.setUrl(url);
 
                 List<String> cidList = new BiliUtil().getCid(aid);
+                boolean flag1 = false;
                 for (String cid : cidList) {
                     String xmlString = new BiliUtil().getDanmu(cid);
                     List<String[]> danmu = new BiliUtil().getDanmuData(xmlString);
@@ -108,37 +109,42 @@ public class DanmuListUtil {
                         boolean flag = false;
                         for (String aim : aims) {
                             if (danmudata[0].contains(aim)) {
+                                flag1 = true;
                                 flag = true;
                                 break;
                             }
                         }
                         if (flag) {
-                            try {
-                                String danmuStr = danmudata[0];
-                                System.out.println(danmuStr);
-                                String uid = crc32Util.solve(danmudata[1]);
+                            String danmuStr = danmudata[0];
+                            System.out.println(danmuStr);
+                            String uid = crc32Util.solve(danmudata[1]);
 
+                            String face = "";
+                            String dmname = "";
+                            String sign = "";
+                            try {
                                 JsonObject userInfo = new BiliUtil().getUpInfo(uid)
                                         .get("data").getAsJsonObject()
                                         .get("card").getAsJsonObject();
 
-                                String face = userInfo.get("face").getAsString();
-                                String dmname = userInfo.get("name").getAsString();
-                                String sign = userInfo.get("sign").getAsString();
-
-                                List<String> list = new ArrayList<String>();
-                                list.add(danmuStr);
-
-                                DanmuDataClass danmuDataClass = new DanmuDataClass(mid, dmname, face, sign, list);
-
-                                videoDanmuClass.addDanmu(danmuDataClass);
+                                face = userInfo.get("face").getAsString();
+                                dmname = userInfo.get("name").getAsString();
+                                sign = userInfo.get("sign").getAsString();
                             }catch (NullPointerException e){
                                 e.printStackTrace();
                             }
+                            List<String> list = new ArrayList<String>();
+                            list.add(danmuStr);
+
+                            DanmuDataClass danmuDataClass = new DanmuDataClass(mid, dmname, face, sign, list);
+
+                            videoDanmuClass.addDanmu(danmuDataClass);
                         }
                     }
                 }
-                upVideoClass.addVideoList(videoDanmuClass);
+                if (flag1) {
+                    upVideoClass.addVideoList(videoDanmuClass);
+                }
             }
 
             danmuClass.addUp(upVideoClass);
