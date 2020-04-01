@@ -8,7 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DanmuListUtil {
@@ -17,9 +19,14 @@ public class DanmuListUtil {
     DanmuClass danmuClass;
     CRC32Util crc32Util;
 
+    Date date = new Date();
+    SimpleDateFormat format = new SimpleDateFormat("YY-MM-dd");
+
     public DanmuListUtil() {
+        System.out.println(format.format(date));
+
         upListClass = ConfigLoader.load(".\\data\\uplist.json", UpListClass.class);
-        danmuClass = ConfigLoader.load(".\\data\\danmulist.json", DanmuClass.class);
+        danmuClass = ConfigLoader.load(".\\data\\" + format.format(date) + "danmulist.json", DanmuClass.class);
         crc32Util = new CRC32Util();
 
         String[] aim = new String[]{"TIS", "Tis", "tis"};
@@ -136,7 +143,7 @@ public class DanmuListUtil {
                             List<String> list = new ArrayList<String>();
                             list.add(danmuStr);
 
-                            DanmuDataClass danmuDataClass = new DanmuDataClass(mid, dmname, face, sign, list);
+                            DanmuDataClass danmuDataClass = new DanmuDataClass(uid, dmname, face, sign, list);
 
                             videoDanmuClass.addDanmu(danmuDataClass);
                         }
@@ -148,7 +155,7 @@ public class DanmuListUtil {
             }
 
             danmuClass.addUp(upVideoClass);
-            ConfigLoader.save(".\\data\\danmulist.json", DanmuClass.class, danmuClass);
+            ConfigLoader.save(".\\data\\" + format.format(date) + "danmulist.json", DanmuClass.class, danmuClass);
         }
     }
 
