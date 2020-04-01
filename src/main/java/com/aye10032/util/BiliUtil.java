@@ -18,7 +18,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class BiliUtil {
 
@@ -34,7 +36,7 @@ public class BiliUtil {
         httpclient = HttpClients.createDefault();
     }
 
-    public JsonObject getUpInfo(String UUID){
+    public JsonObject getUpInfo(String UUID) {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append(api_up).append(UUID);
 
@@ -52,17 +54,19 @@ public class BiliUtil {
                 body = EntityUtils.toString(httpEntity, "UTF-8");
             }
 
+            System.out.println(body);
+
             JsonParser jsonParser = new JsonParser();
             JsonElement element = jsonParser.parse(body);
 
-            if (element.isJsonObject()){
+            if (element.isJsonObject()) {
                 jsonObject = element.getAsJsonObject();
             }
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -82,7 +86,7 @@ public class BiliUtil {
         return jsonObject;
     }
 
-    public String getUplist(String UUID,int pageNumber){
+    public String getUplist(String UUID, int pageNumber) {
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append(api_following).append(UUID).append("&pn=")
                 .append(pageNumber).append("&ps=20&order=desc&jsonp=jsonp");
@@ -118,7 +122,7 @@ public class BiliUtil {
             }
         }
 
-            return body;
+        return body;
     }
 
     public List<String[]> getVideoList(String UUID, int pageSize) {
@@ -263,10 +267,9 @@ public class BiliUtil {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 if (response != null) {
                     response.close(); //释放连接

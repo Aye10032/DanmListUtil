@@ -5,11 +5,11 @@ import java.util.List;
 
 public class DanmuDataClass {
 
-    private List<String> danmu;
     private String mid;
     private String name;
     private String face;
     private String sign;
+    private List<String> danmu;
 
     public  DanmuDataClass(){
 

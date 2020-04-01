@@ -142,9 +142,8 @@ public class DanmuListUtil {
             }
 
             danmuClass.addUp(upVideoClass);
+            ConfigLoader.save(".\\data\\danmulist.json", DanmuClass.class, danmuClass);
         }
-
-        ConfigLoader.save(".\\data\\danmulist.json", DanmuClass.class, danmuClass);
     }
 
 }
