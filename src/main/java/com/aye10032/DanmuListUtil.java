@@ -22,7 +22,7 @@ public class DanmuListUtil {
         danmuClass = ConfigLoader.load(".\\data\\danmulist.json", DanmuClass.class);
         crc32Util = new CRC32Util();
 
-        String[] aim = new String[]{"TIS","Tis","tis"};
+        String[] aim = new String[]{"TIS", "Tis", "tis"};
 
         getAimDanmu(aim);
 
@@ -92,7 +92,7 @@ public class DanmuListUtil {
                 String title = aid_title[1];
                 String url = "https://www.bilibili.com/video/av" + aid;
 
-                System.out.println(url);
+                System.out.println("    " + url);
 
                 VideoDanmuClass videoDanmuClass = new VideoDanmuClass();
                 videoDanmuClass.setAid(aid);
@@ -116,7 +116,7 @@ public class DanmuListUtil {
                         }
                         if (flag) {
                             String danmuStr = danmudata[0];
-                            System.out.println(danmuStr);
+                            System.out.println("        " + danmuStr);
                             String uid = crc32Util.solve(danmudata[1]);
 
                             String face = "";
@@ -130,8 +130,8 @@ public class DanmuListUtil {
                                 face = userInfo.get("face").getAsString();
                                 dmname = userInfo.get("name").getAsString();
                                 sign = userInfo.get("sign").getAsString();
-                            }catch (NullPointerException e){
-                                e.printStackTrace();
+                            } catch (NullPointerException e) {
+                                e.getCause();
                             }
                             List<String> list = new ArrayList<String>();
                             list.add(danmuStr);

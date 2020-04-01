@@ -54,8 +54,6 @@ public class BiliUtil {
                 body = EntityUtils.toString(httpEntity, "UTF-8");
             }
 
-            System.out.println(body);
-
             JsonParser jsonParser = new JsonParser();
             JsonElement element = jsonParser.parse(body);
 
