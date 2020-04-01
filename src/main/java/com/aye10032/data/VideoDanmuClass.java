@@ -44,16 +44,20 @@ public class VideoDanmuClass {
 
     public void addDanmu(DanmuDataClass danmudata){
         String mid = danmudata.getMid();
-        for (DanmuDataClass data:danmulist){
-            if (data.getMid().equals(mid)){
+        boolean exist = false;
+        for (DanmuDataClass data : danmulist) {
+            if (data.getMid().equals(mid)) {
                 data.addDanmu(danmudata.getDanmu().get(0));
+                exist = true;
                 break;
             }
         }
-        String name = danmudata.getName();
-        String face = danmudata.getFace();
-        String sign = danmudata.getSign();
-        List<String> danmu = danmudata.getDanmu();
-        danmulist.add(new DanmuDataClass(mid,name,face,sign,danmu));
+        if (!exist) {
+            String name = danmudata.getName();
+            String face = danmudata.getFace();
+            String sign = danmudata.getSign();
+            List<String> danmu = danmudata.getDanmu();
+            danmulist.add(new DanmuDataClass(mid, name, face, sign, danmu));
+        }
     }
 }
